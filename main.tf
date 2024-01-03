@@ -51,22 +51,12 @@ resource "aws_ecs_task_definition" "image-classification-task-definition" {
       ]
     },
   ])
-
-  volume {
-    name      = "service-storage"
-    host_path = "/ecs/service-storage"
-  }
-
-  placement_constraints {
-    type       = "memberOf"
-    expression = "attribute:ecs.availability-zone in [us-west-2a, us-west-2b]"
-  }
 }
 
 resource "aws_ecs_service" "image-classification-service" {
   name            = "image-classification-service"
   cluster         = aws_ecs_cluster.image-classification-cluster.id
-  task_definition = aws_ecs_task_definition.mongo.arn
+  task_definition = aws_ecs_task_definition.image-classification-task-definition.arn
   desired_count   = 1
   iam_role        = aws_iam_role.foo.arn
   depends_on      = [aws_iam_role_policy.foo]
